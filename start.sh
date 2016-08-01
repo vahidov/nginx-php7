@@ -26,6 +26,7 @@ if [[ -n "$PROXY_WEB" ]]; then
     # FREE HTTPS
     if [[ -n "$PROXY_FREE" ]]; then
 
+        rpm -ivh ftp://fr2.rpmfind.net/linux/epel/6/i386/python-pip-7.1.0-1.el6.noarch.rpm
         yum -y install epel-release python python-pip openssl
         #Let's FREE HTTPS
         curl -O -SL -C - https://github.com/certbot/certbot/archive/v0.8.1.tar.gz  && \
