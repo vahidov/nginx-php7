@@ -37,9 +37,19 @@ docker run -d --name=nginx \
 -p 80:80 -p 443:443 \
 -v your_crt_key_files:/usr/local/nginx/conf/ssl \
 -e PROXY_WEB=On \
+-e PROXY_DOMAIN=your_domain \
 -e PROXY_CRT=your_crt_name \
 -e PROXY_KEY=your_key_name \
+skiychan/nginx-php7
+```
+
+## Enabling SSL for Let’s Encrypt
+```sh
+docker run -d --name=nginx \
+-p 80:80 -p 443:443 \
+-e PROXY_WEB=On \
 -e PROXY_DOMAIN=your_domain \
+-e PROXY_FREE=On \
 skiychan/nginx-php7
 ```
 
