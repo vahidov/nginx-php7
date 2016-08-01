@@ -24,7 +24,17 @@ if [[ -n "$PROXY_WEB" ]]; then
     fi
 
     # FREE HTTPS
-    if [ ! -z "$PROXY_FREE" ]; then
+    if [[ -n "$PROXY_FREE" ]]; then
+
+        #Let's FREE HTTPS
+        curl -O -SL -C - https://github.com/certbot/certbot/archive/v0.8.1.tar.gz  && \
+        tar -zxvf v0.8.1.tar.gz && \
+        cd certbot-0.8.1
+        ./certbot-auto certonly --email dev@skiy.net --agree-tos --webroot -w /data/www -d $PROXY_DOMAIN
+        CRT_PATH=/etc/letsencrypt/live/{$PROXY_DOMAIN}/fullchain.pem;
+        KEY_PATH=/etc/letsencrypt/live/{$PROXY_DOMAIN}/privkey.pem;
+
+    else    
 
         if [ -z "$PROXY_CRT" ]; then
              echo >&2 'error:  missing PROXY_CRT'
@@ -54,15 +64,6 @@ if [[ -n "$PROXY_WEB" ]]; then
          CRT_PATH=ssl/${PROXY_CRT}
          KEY_PATH=ssl/${PROXY_KEY}
 
-     else
-     
-        #Let's FREE HTTPS
-        curl -O -SL -C - https://github.com/certbot/certbot/archive/v0.8.1.tar.gz  && \
-        tar -zxvf v0.8.1.tar.gz && \
-        cd certbot-0.8.1
-        ./certbot-auto certonly --email dev@skiy.net --agree-tos --webroot -w /data/www -d $PROXY_DOMAIN
-        CRT_PATH=/etc/letsencrypt/live/{$PROXY_DOMAIN}/fullchain.pem;
-        KEY_PATH=/etc/letsencrypt/live/{$PROXY_DOMAIN}/privkey.pem;
      fi    
 
     cat > ${Nginx_Install_Dir}/conf/vhost/website.conf << EOF
