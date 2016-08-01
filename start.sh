@@ -26,7 +26,8 @@ if [[ -n "$PROXY_WEB" ]]; then
     # FREE HTTPS
     if [[ -n "$PROXY_FREE" ]]; then
 
-        yum install -y openssl
+        yum -y install epel-release
+        #yum install -y openssl
         #Let's FREE HTTPS
         curl -O -SL -C - https://github.com/certbot/certbot/archive/v0.8.1.tar.gz  && \
         tar -zxvf v0.8.1.tar.gz && \
