@@ -1,3 +1,7 @@
+**2016 / 08 / 02:**     
+upgrade nginx to version 1.11.3 
+add https for letsencrypt
+
 **2016 / 07 / 22:**     
 upgrade php to version 7.0.9  
 
