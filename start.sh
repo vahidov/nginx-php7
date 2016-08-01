@@ -12,40 +12,58 @@ DATA_DIR=/data/www
 set -e
 chown -R www.www $DATA_DIR
 
+# HTTPS
 if [[ -n "$PROXY_WEB" ]]; then
 
-    [ -f "${Nginx_Install_Dir}/conf/ssl" ] || mkdir -p $Nginx_Install_Dir/conf/ssl
+    # CONF file
     [ -f "${Nginx_Install_Dir}/conf/vhost" ] || mkdir -p $Nginx_Install_Dir/conf/vhost
-
     if [ -z "$PROXY_DOMAIN" ]; then
             echo >&2 'error:  missing PROXY_DOMAIN'
             echo >&2 '  Did you forget to add -e PROXY_DOMAIN=... ?'
             exit 1
     fi
 
-    if [ -z "$PROXY_CRT" ]; then
-         echo >&2 'error:  missing PROXY_CRT'
-         echo >&2 '  Did you forget to add -e PROXY_CRT=... ?'
-         exit 1
-     fi
+    # FREE HTTPS
+    if [ ! -z "$PROXY_FREE" ]; then
 
-     if [ -z "$PROXY_KEY" ]; then
-             echo >&2 'error:  missing PROXY_KEY'
-             echo >&2 '  Did you forget to add -e PROXY_KEY=... ?'
-             exit 1
-     fi
-
-     if [ ! -f "${Nginx_Install_Dir}/conf/ssl/${PROXY_CRT}" ]; then
+        if [ -z "$PROXY_CRT" ]; then
              echo >&2 'error:  missing PROXY_CRT'
-             echo >&2 "  You need to put ${PROXY_CRT} in ssl directory"
+             echo >&2 '  Did you forget to add -e PROXY_CRT=... ?'
              exit 1
-     fi
+         fi
 
-     if [ ! -f "${Nginx_Install_Dir}/conf/ssl/${PROXY_KEY}" ]; then
-             echo >&2 'error:  missing PROXY_CSR'
-             echo >&2 "  You need to put ${PROXY_KEY} in ssl directory"
-             exit 1
-     fi
+         if [ -z "$PROXY_KEY" ]; then
+                 echo >&2 'error:  missing PROXY_KEY'
+                 echo >&2 '  Did you forget to add -e PROXY_KEY=... ?'
+                 exit 1
+         fi
+
+         if [ ! -f "${Nginx_Install_Dir}/conf/ssl/${PROXY_CRT}" ]; then
+                 echo >&2 'error:  missing PROXY_CRT'
+                 echo >&2 "  You need to put ${PROXY_CRT} in ssl directory"
+                 exit 1
+         fi
+
+         if [ ! -f "${Nginx_Install_Dir}/conf/ssl/${PROXY_KEY}" ]; then
+                 echo >&2 'error:  missing PROXY_CSR'
+                 echo >&2 "  You need to put ${PROXY_KEY} in ssl directory"
+                 exit 1
+         fi
+
+         [ -f "${Nginx_Install_Dir}/conf/ssl" ] || mkdir -p $Nginx_Install_Dir/conf/ssl
+         CRT_PATH=ssl/${PROXY_CRT}
+         KEY_PATH=ssl/${PROXY_KEY}
+
+     else
+     
+        #Let's FREE HTTPS
+        curl -O -SL -C - https://github.com/certbot/certbot/archive/v0.8.1.tar.gz  && \
+        tar -zxvf v0.8.1.tar.gz && \
+        cd certbot-0.8.1
+        ./certbot-auto certonly --email dev@skiy.net --agree-tos --webroot -w /data/www -d $PROXY_DOMAIN
+        CRT_PATH=/etc/letsencrypt/live/{$PROXY_DOMAIN}/fullchain.pem;
+        KEY_PATH=/etc/letsencrypt/live/{$PROXY_DOMAIN}/privkey.pem;
+     fi    
 
     cat > ${Nginx_Install_Dir}/conf/vhost/website.conf << EOF
 server {
@@ -59,8 +77,8 @@ server {
     server_name $PROXY_DOMAIN;
 
     ssl on;
-    ssl_certificate ssl/${PROXY_CRT};
-    ssl_certificate_key ssl/${PROXY_KEY};
+    ssl_certificate ${CRT_PATH};
+    ssl_certificate_key ${KEY_PATH};
     ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
     ssl_prefer_server_ciphers on;
     ssl_ciphers "EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH";
