@@ -43,7 +43,7 @@ docker run -d --name=nginx \
 skiychan/nginx-php7
 ```
 
-## Enabling SSL for Let’s Encrypt
+## Enabling SSL with Let’s Encrypt
 ```sh
 docker run -d --name=nginx \
 -p 80:80 -p 443:443 \
@@ -64,4 +64,4 @@ docker run --name nginx -p 8080:80 -d -v /your_php_extension:/usr/local/php/etc/
 ## Author
 Author: Skiychan    
 Email:  dev@skiy.net       
-Link:   https://www.zzzzy.com
+Link:   https://www.skiy.net
