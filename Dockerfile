@@ -1,4 +1,4 @@
-FROM apline
+FROM apline:3.4
 MAINTAINER Skiychan <dev@skiy.net>
 
 ENV NGINX_VERSION 1.11.3
