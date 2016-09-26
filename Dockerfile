@@ -1,4 +1,4 @@
-FROM centos:7
+FROM apline
 MAINTAINER Skiychan <dev@skiy.net>
 
 ENV NGINX_VERSION 1.11.3
