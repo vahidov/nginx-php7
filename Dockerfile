@@ -95,6 +95,7 @@ RUN set -x && \
     --enable-bcmath \
     --enable-exif \
     --enable-fileinfo \
+    --enable-cli \
     --disable-rpath \
     --enable-ipv6 \
     --disable-debug \
@@ -108,6 +109,10 @@ RUN set -x && \
     cp /usr/local/php/etc/php-fpm.conf.default /usr/local/php/etc/php-fpm.conf && \
     cp /usr/local/php/etc/php-fpm.d/www.conf.default /usr/local/php/etc/php-fpm.d/www.conf && \
 
+#install composer
+    curl -Lk  -sS https://getcomposer.org/installer | php \
+    && mv composer.phar /usr/bin/composer \
+  
 #Install supervisor
     easy_install supervisor && \
     mkdir -p /var/{log/supervisor,run/{sshd,supervisord}} && \
