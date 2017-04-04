@@ -1,8 +1,8 @@
 FROM centos:7
-MAINTAINER Skiychan <dev@skiy.net>
+MAINTAINER Danil Vahidov <vahidov@gmail.com>
 
 ENV NGINX_VERSION 1.11.6
-ENV PHP_VERSION 7.1.0
+ENV PHP_VERSION 7.1.3
 
 RUN set -x && \
     yum install -y gcc \
@@ -109,10 +109,7 @@ RUN set -x && \
     cp /usr/local/php/etc/php-fpm.conf.default /usr/local/php/etc/php-fpm.conf && \
     cp /usr/local/php/etc/php-fpm.d/www.conf.default /usr/local/php/etc/php-fpm.d/www.conf && \
 
-#install composer
-    curl -Lk  -sS https://getcomposer.org/installer | php \
-    && mv composer.phar /usr/bin/composer \
-  
+
 #Install supervisor
     easy_install supervisor && \
     mkdir -p /var/{log/supervisor,run/{sshd,supervisord}} && \
